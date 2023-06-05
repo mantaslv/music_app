@@ -1,4 +1,5 @@
-print("Hello")
-# Prints 'Hello'
-print(5)
-# Prints '5'
+print("Hello world,")
+print("I am a new program")
+print("I am")
+print(7)
+print("microseconds old.")
