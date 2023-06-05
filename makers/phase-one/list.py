@@ -2,7 +2,7 @@ my_list = ["Cat", "Mouse", "Frog"]
 
 # Write some code to amend the list here.
 
-my_list.append("Lynx")
+my_list.insert(1, "Lynx")
 
 print(my_list)
 # Should print:
