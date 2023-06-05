@@ -1,2 +1,2 @@
-name = "Mantas"
-print(f"Hello, {name}!")
+animal = "Frog"
+print(f"Hello to all {animal}s.")
