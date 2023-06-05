@@ -17,5 +17,8 @@ class TestFizzbuzz(unittest.TestCase):  # Sets up a new test case
     def test_lists_values_up_to_four(self):
         self.assertEqual(generate(4), "1, 2, Fizz, 4")
 
+    def test_lists_values_up_to_five(self):
+        self.assertEqual(generate(5), "1, 2, Fizz, 4, Buzz")
+
     # Start by uncommenting the above, and when you've made that pass move 
     # forward with your own tests.
