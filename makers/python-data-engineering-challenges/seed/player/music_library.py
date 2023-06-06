@@ -1,2 +1,6 @@
 class MusicLibrary:
-    pass
+    def __init__(self):
+        self.songs = []
+    
+    def all(self):
+        return self.songs
