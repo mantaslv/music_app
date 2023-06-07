@@ -21,3 +21,11 @@ class TestMusicLibrary(unittest.TestCase):
         music_library.add("Oh Yeah by Locust")
         music_library.add("Sleep on the Wing by Bibio")
         self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Oh Yeah by Locust", "Sleep on the Wing by Bibio"])
+
+    def test_removes_existing_song(self):
+        music_library = MusicLibrary()
+        music_library.add("Rolling Blackouts by The Go! Team")
+        music_library.add("Oh Yeah by Locust")
+        music_library.add("Sleep on the Wing by Bibio")
+        self.assertEqual(music_library.remove(1), True)
+        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Sleep on the Wing by Bibio"])
