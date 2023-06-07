@@ -9,5 +9,8 @@ class MusicLibrary:
         self.songs.append(song)
 
     def remove(self, song_num):
-        self.songs.pop(song_num)
-        return True
+        if song_num > len(self.songs) - 1:
+            return False
+        else:
+            self.songs.pop(song_num)
+            return True
