@@ -4,3 +4,6 @@ class MusicLibrary:
     
     def all(self):
         return self.songs
+    
+    def add(self, song):
+        self.songs.append(song)

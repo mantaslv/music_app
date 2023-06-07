@@ -9,3 +9,8 @@ class TestMusicLibrary(unittest.TestCase):
     def test_returns_empty_all(self):
         music_library = MusicLibrary()
         self.assertEqual(music_library.all(), [])
+
+    def test_returns_one(self):
+        music_library = MusicLibrary()
+        music_library.add("Rolling Blackouts by The Go! Team")
+        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team"])
