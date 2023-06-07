@@ -1,6 +1,6 @@
 import unittest
 
-from player.music_library import MusicLibrary
+from player.music_library import MusicLibrary, Track
 
 class TestMusicLibrary(unittest.TestCase):
     def test_constructs(self):
@@ -38,3 +38,35 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(music_library.remove(20), False)
         self.assertEqual(music_library.remove(3), False)
         self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Oh Yeah by Locust", "Sleep on the Wing by Bibio"])
+
+    def test_adds_tracks(self):
+        subject = MusicLibrary()
+        subject.add(Track("Moksha", "Caspian", "file.mp3"))
+        self.assertEqual(subject.all(), [Track("Moksha", "Caspian", "file.mp3")])
+
+    def test_removes_tracks(self):
+        subject = MusicLibrary()
+        subject.add(Track("Moksha", "Caspian", "file.mp3"))
+        subject.add(Track("Without You", "Dawn Landes", "file.mp3"))
+        subject.add(Track("Dry Lips", "Lightspeed Champion", "file.mp3"))
+        signal = subject.remove(1)
+        self.assertTrue(signal)
+        self.assertEqual(
+            subject.all(),
+            [
+                Track("Moksha", "Caspian", "file.mp3"),
+                Track("Dry Lips", "Lightspeed Champion", "file.mp3"),
+            ],
+        )
+
+    def test_lists_tracks(self):
+        subject = MusicLibrary()
+        subject.add(Track("Moksha", "Caspian", "file.mp3"))
+        subject.add(Track("Dry Lips", "Lightspeed Champion", "file.mp3"))
+        self.assertEqual(
+            subject.all(),
+            [
+                Track("Moksha", "Caspian", "file.mp3"),
+                Track("Dry Lips", "Lightspeed Champion", "file.mp3"),
+            ],
+        )
