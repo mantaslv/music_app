@@ -70,3 +70,11 @@ class TestMusicLibrary(unittest.TestCase):
                 Track("Dry Lips", "Lightspeed Champion", "file.mp3"),
             ],
         )
+
+    def test_search(self):
+        lib = MusicLibrary()
+        lib.add(Track("Dead Letters", "P.S. Eliot", "dl.mp3"))
+        lib.add(Track("Friend Is A Four Letter Word", "CAKE", "friend.mp3"))
+        lib.add(Track("Letters '98", "Havergal", "98.mp3"))
+        result = lib.search(lambda track: "dead" in track.title.lower())
+        self.assertEqual(list(result), [Track(title='Dead Letters', artist='P.S. Eliot', file='dl.mp3')])

@@ -10,10 +10,20 @@ class TestConsoleRunner(unittest.TestCase):
         PrintLine("  p: to play a track"),
         PrintLine("  d: to delete a track"),
         PrintLine("  l: to list your tracks"),
+        PrintLine("  s: to search your tracks"),
         PrintLine("  q: to quit"),
     ]
 
     INTRO = [PrintLine("Welcome to your music library!"), *OPTIONS]
+
+    SEARCH = [
+        InputLine("What do you pick? ", "s"),
+        PrintLine("Search by:"),
+        PrintLine("  t: title"),
+        PrintLine("  a: artist"),
+        PrintLine("  f: file"),
+        PrintLine("  *: anything"),
+    ]
 
     QUIT = [*OPTIONS, InputLine("What do you pick? ", "q")]
 
@@ -58,6 +68,52 @@ class TestConsoleRunner(unittest.TestCase):
             ["afplay", "data/tunes/myfav.wav"],
             "Subprocess wasn't called properly to play the file.",
         )
+        self.assertTrue(testing_console_io.is_done())
+
+    def test_searches_tracks(self):
+        testing_console_io = TestingConsoleIO(
+            *self.INTRO,
+            InputLine("What do you pick? ", "a"),
+            InputLine("What's the title? ", "Major's Titling Victory"),
+            InputLine("What's the artist? ", "The Cribs"),
+            InputLine("What's the file? ", "file1.mp3"),
+            PrintLine("Added successfully."),
+            *self.OPTIONS,
+            InputLine("What do you pick? ", "a"),
+            InputLine("What's the title? ", "The Milky Way over Ratlinghope"),
+            InputLine("What's the artist? ", "Bibio"),
+            InputLine("What's the file? ", "file2.mp3"),
+            PrintLine("Added successfully."),
+            *self.OPTIONS,
+            *self.SEARCH,
+            InputLine("What do you want to search by? ", "t"),
+            InputLine("What do you want to search for? ", "vic"),
+            PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+            *self.OPTIONS,
+            *self.SEARCH,
+            InputLine("What do you want to search by? ", "a"),
+            InputLine("What do you want to search for? ", "ibi"),
+            PrintLine("1. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+            *self.OPTIONS,
+            *self.SEARCH,
+            InputLine("What do you want to search by? ", "f"),
+            InputLine("What do you want to search for? ", "fi"),
+            PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+            PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+            *self.OPTIONS,
+            *self.SEARCH,
+            InputLine("What do you want to search by? ", "*"),
+            InputLine("What do you want to search for? ", "r"),
+            PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+            PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+            *self.OPTIONS,
+            *self.SEARCH,
+            InputLine("What do you want to search by? ", "*"),
+            InputLine("What do you want to search for? ", "xx"),
+            *self.QUIT,
+        )
+        interface = Interface(testing_console_io, MockSubprocess())
+        interface.run()
         self.assertTrue(testing_console_io.is_done())
 
     def test_deletes_tracks(self):

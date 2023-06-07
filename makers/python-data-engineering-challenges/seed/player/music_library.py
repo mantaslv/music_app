@@ -2,20 +2,24 @@ from dataclasses import dataclass
 
 class MusicLibrary:
     def __init__(self):
-        self.songs = []
+        self._tracks = []
     
     def all(self):
-        return self.songs
+        return self._tracks
     
     def add(self, song):
-        self.songs.append(song)
+        self._tracks.append(song)
 
     def remove(self, song_num):
-        if song_num > len(self.songs) - 1:
+        if song_num > len(self._tracks) - 1:
             return False
         else:
-            self.songs.pop(song_num)
+            self._tracks.pop(song_num)
             return True
+        
+    def search(self, condition):
+        return filter(condition, self._tracks)
+        
         
 @dataclass
 class Track:
