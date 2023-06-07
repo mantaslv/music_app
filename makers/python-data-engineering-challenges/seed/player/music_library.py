@@ -18,7 +18,7 @@ class MusicLibrary:
             return True
         
     def search(self, condition):
-        return filter(condition, self._tracks)
+        return [track for track in self._tracks if condition(track)]
         
         
 @dataclass
