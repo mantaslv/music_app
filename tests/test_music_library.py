@@ -31,14 +31,15 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(self.music_library.all(), [])
 
     def test_adds_one(self):
-        track = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
         self.music_library.add(track)
-        self.assertEqual(self.music_library.all()[0].title, track.title)
+        all_tracks = self.music_library.all()
+        self.assertEqual(all_tracks[0].artist, track.artist)
 
     def test_adds_multiple(self):
-        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
-        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
         self.music_library.add(track1)
         self.music_library.add(track2)
         self.music_library.add(track3)
@@ -46,9 +47,9 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(self.music_library.all()[2].artist, track3.artist)
 
     def test_removes_existing_song(self):
-        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
-        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
         self.music_library.add(track1)
         self.music_library.add(track2)
         self.music_library.add(track3)
@@ -58,9 +59,9 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(self.music_library.all()[1].title, track3.title)
 
     def test_cant_remove_nonexistent_song(self):
-        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
-        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
         self.music_library.add(track1)
         self.music_library.add(track2)
         self.music_library.add(track3)
@@ -69,9 +70,9 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(len(self.music_library.all()), 3)
 
     def test_search(self):
-        track1 = Track(id=1, title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
-        track2 = Track(id=2, title="Friend Is A Four Letter Word", artist="CAKE", file="friend.mp3")
-        track3 = Track(id=3, title="Letters '98", artist="Havergal", file="98.mp3")
+        track1 = Track(title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
+        track2 = Track(title="Friend Is A Four Letter Word", artist="CAKE", file="friend.mp3")
+        track3 = Track(title="Letters '98", artist="Havergal", file="98.mp3")
         self.music_library.add(track1)
         self.music_library.add(track2)
         self.music_library.add(track3)
@@ -79,9 +80,9 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(result[0].title, track1.title)
 
     def test_tally(self):
-        track1 = Track(id=1, title="Mixed Emotions", artist="Netsky", file="file2.mp3")
-        track2 = Track(id=2, title="Where Do We Go", artist="Dimension", file="file1.mp3")
-        track3 = Track(id=3, title="DJ Turn It Up", artist="Dimension", file="file3.mp3")
+        track1 = Track(title="Mixed Emotions", artist="Netsky", file="file2.mp3")
+        track2 = Track(title="Where Do We Go", artist="Dimension", file="file1.mp3")
+        track3 = Track(title="DJ Turn It Up", artist="Dimension", file="file3.mp3")
         self.music_library.add(track1)
         self.music_library.add(track2)
         self.music_library.add(track3)

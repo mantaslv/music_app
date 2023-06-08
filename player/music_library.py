@@ -1,12 +1,11 @@
 import psycopg2
-from dataclasses import dataclass
 
 class Track:
-    def __init__(self, id, title, artist, file):
-        self.id = id
+    def __init__(self, title, artist, file):
         self.title = title
         self.artist = artist
         self.file = file
+        self.id = None
 
     def __str__(self):
         return f"{self.title} by {self.artist}"
@@ -38,7 +37,7 @@ class MusicLibrary:
         self._connection.commit()
     
     def all(self):
-        select_query = 'SELECT * FROM tracks'
+        select_query = 'SELECT title, artist, file FROM tracks'
         self._cursor.execute(select_query)
         tracks = self._cursor.fetchall()
         return [Track(*track) for track in tracks]
@@ -59,7 +58,7 @@ class MusicLibrary:
         return self._cursor.rowcount > 0
 
     def search(self, condition):
-        select_query = 'SELECT * FROM tracks'
+        select_query = 'SELECT title, artist, file FROM tracks'
         self._cursor.execute(select_query)
         tracks = self._cursor.fetchall()
         return [Track(*track) for track in tracks if condition(Track(*track))]
