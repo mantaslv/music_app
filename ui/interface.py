@@ -1,7 +1,3 @@
-# Over to you!
-# I'm outta here!
-# ~Kez xoxo
-
 from player.music_library import MusicLibrary, Track
 from player.music_player import MusicPlayer
 
@@ -26,10 +22,20 @@ class Interface:
                 self._list_tracks(self.music_library.all())
             elif choice == "s":
                 self._search_tracks()
+            elif choice == "t":
+                self._summarise(self.music_library.tally())
             elif choice == "q":
                 return
             else:
                 self.console.print("No such command! Try again.")
+                
+    def _summarise(self, tally):
+        sorted_tally = dict(sorted(tally.items(), key=lambda x:x[1], reverse=True))
+
+        for position, (artist, freq) in enumerate(sorted_tally.items(), start=1):
+            plural_suffix = 's' if freq > 1 else ''
+            summary = f"{position}. {artist}: {freq} track{plural_suffix}"
+            self.console.print(summary)
 
     def _prompt(self):
         self.console.print("Enter:")
@@ -38,6 +44,7 @@ class Interface:
         self.console.print("  d: to delete a track")
         self.console.print("  l: to list your tracks")
         self.console.print("  s: to search your tracks")
+        self.console.print("  t: to summarise your top artists")
         self.console.print("  q: to quit")
         return self.console.input("What do you pick? ")
 

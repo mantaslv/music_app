@@ -19,6 +19,16 @@ class MusicLibrary:
         
     def search(self, condition):
         return [track for track in self._tracks if condition(track)]
+    
+    def tally(self):
+        tally = {}
+
+        artists = map(lambda x: x.artist, self._tracks)
+
+        for artist in artists:
+            tally[artist] = tally.get(artist, 0) + 1
+
+        return tally
         
         
 @dataclass

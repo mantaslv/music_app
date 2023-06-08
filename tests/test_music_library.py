@@ -78,3 +78,10 @@ class TestMusicLibrary(unittest.TestCase):
         lib.add(Track("Letters '98", "Havergal", "98.mp3"))
         result = lib.search(lambda track: "dead" in track.title.lower())
         self.assertEqual(list(result), [Track(title='Dead Letters', artist='P.S. Eliot', file='dl.mp3')])
+
+    def test_tally(self):
+        lib = MusicLibrary()
+        lib.add(Track("Mixed Emotions", "Netsky", "file2.mp3"))
+        lib.add(Track("Where Do We Go", "Dimension", "file1.mp3"))
+        lib.add(Track("DJ Turn It Up", "Dimension", "file3.mp3"))
+        self.assertEqual(lib.tally(), {'Dimension': 2, 'Netsky': 1})
