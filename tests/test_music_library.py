@@ -1,87 +1,88 @@
 import unittest
-
+import psycopg2
 from player.music_library import MusicLibrary, Track
 
 class TestMusicLibrary(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # Connect to the test database
+        cls.connection = psycopg2.connect(
+            host="127.0.0.1",
+            database="python_music_test"
+        )
+        cls.cursor = cls.connection.cursor()
+        cls.music_library = MusicLibrary(env='test')
+
+    @classmethod
+    def tearDownClass(cls):
+        # Clean up the test database and close the connection
+        cls.cursor.close()
+        cls.connection.close()
+
+    def setUp(self):
+        # Clear any existing data in the test database before each test
+        self.cursor.execute("DELETE FROM tracks")
+        self.connection.commit()
+
     def test_constructs(self):
-        MusicLibrary()
+        self.assertIsInstance(self.music_library, MusicLibrary)
 
     def test_returns_empty_all(self):
-        music_library = MusicLibrary()
-        self.assertEqual(music_library.all(), [])
+        self.assertEqual(self.music_library.all(), [])
 
     def test_adds_one(self):
-        music_library = MusicLibrary()
-        music_library.add("Rolling Blackouts by The Go! Team")
-        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team"])
+        track = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        self.music_library.add(track)
+        self.assertEqual(self.music_library.all()[0].title, track.title)
 
     def test_adds_multiple(self):
-        music_library = MusicLibrary()
-        music_library.add("Rolling Blackouts by The Go! Team")
-        music_library.add("Oh Yeah by Locust")
-        music_library.add("Sleep on the Wing by Bibio")
-        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Oh Yeah by Locust", "Sleep on the Wing by Bibio"])
+        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        self.music_library.add(track1)
+        self.music_library.add(track2)
+        self.music_library.add(track3)
+        self.assertEqual(len(self.music_library.all()), 3)
+        self.assertEqual(self.music_library.all()[2].artist, track3.artist)
 
     def test_removes_existing_song(self):
-        music_library = MusicLibrary()
-        music_library.add("Rolling Blackouts by The Go! Team")
-        music_library.add("Oh Yeah by Locust")
-        music_library.add("Sleep on the Wing by Bibio")
-        self.assertEqual(music_library.remove(1), True)
-        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Sleep on the Wing by Bibio"])
+        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        self.music_library.add(track1)
+        self.music_library.add(track2)
+        self.music_library.add(track3)
+        self.assertTrue(self.music_library.remove(track2.id))
+        self.assertEqual(len(self.music_library.all()), 2)
+        self.assertEqual(self.music_library.all()[0].title, track1.title)
+        self.assertEqual(self.music_library.all()[1].title, track3.title)
 
     def test_cant_remove_nonexistent_song(self):
-        music_library = MusicLibrary()
-        music_library.add("Rolling Blackouts by The Go! Team")
-        music_library.add("Oh Yeah by Locust")
-        music_library.add("Sleep on the Wing by Bibio")
-        self.assertEqual(music_library.remove(20), False)
-        self.assertEqual(music_library.remove(3), False)
-        self.assertEqual(music_library.all(), ["Rolling Blackouts by The Go! Team", "Oh Yeah by Locust", "Sleep on the Wing by Bibio"])
-
-    def test_adds_tracks(self):
-        subject = MusicLibrary()
-        subject.add(Track("Moksha", "Caspian", "file.mp3"))
-        self.assertEqual(subject.all(), [Track("Moksha", "Caspian", "file.mp3")])
-
-    def test_removes_tracks(self):
-        subject = MusicLibrary()
-        subject.add(Track("Moksha", "Caspian", "file.mp3"))
-        subject.add(Track("Without You", "Dawn Landes", "file.mp3"))
-        subject.add(Track("Dry Lips", "Lightspeed Champion", "file.mp3"))
-        signal = subject.remove(1)
-        self.assertTrue(signal)
-        self.assertEqual(
-            subject.all(),
-            [
-                Track("Moksha", "Caspian", "file.mp3"),
-                Track("Dry Lips", "Lightspeed Champion", "file.mp3"),
-            ],
-        )
-
-    def test_lists_tracks(self):
-        subject = MusicLibrary()
-        subject.add(Track("Moksha", "Caspian", "file.mp3"))
-        subject.add(Track("Dry Lips", "Lightspeed Champion", "file.mp3"))
-        self.assertEqual(
-            subject.all(),
-            [
-                Track("Moksha", "Caspian", "file.mp3"),
-                Track("Dry Lips", "Lightspeed Champion", "file.mp3"),
-            ],
-        )
+        track1 = Track(id=1, title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(id=2, title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(id=3, title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        self.music_library.add(track1)
+        self.music_library.add(track2)
+        self.music_library.add(track3)
+        self.assertFalse(self.music_library.remove(20))
+        self.assertFalse(self.music_library.remove(track3.id + 1))
+        self.assertEqual(len(self.music_library.all()), 3)
 
     def test_search(self):
-        lib = MusicLibrary()
-        lib.add(Track("Dead Letters", "P.S. Eliot", "dl.mp3"))
-        lib.add(Track("Friend Is A Four Letter Word", "CAKE", "friend.mp3"))
-        lib.add(Track("Letters '98", "Havergal", "98.mp3"))
-        result = lib.search(lambda track: "dead" in track.title.lower())
-        self.assertEqual(list(result), [Track(title='Dead Letters', artist='P.S. Eliot', file='dl.mp3')])
+        track1 = Track(id=1, title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
+        track2 = Track(id=2, title="Friend Is A Four Letter Word", artist="CAKE", file="friend.mp3")
+        track3 = Track(id=3, title="Letters '98", artist="Havergal", file="98.mp3")
+        self.music_library.add(track1)
+        self.music_library.add(track2)
+        self.music_library.add(track3)
+        result = self.music_library.search(lambda track: "dead" in track.title.lower())
+        self.assertEqual(result[0].title, track1.title)
 
     def test_tally(self):
-        lib = MusicLibrary()
-        lib.add(Track("Mixed Emotions", "Netsky", "file2.mp3"))
-        lib.add(Track("Where Do We Go", "Dimension", "file1.mp3"))
-        lib.add(Track("DJ Turn It Up", "Dimension", "file3.mp3"))
-        self.assertEqual(lib.tally(), {'Dimension': 2, 'Netsky': 1})
+        track1 = Track(id=1, title="Mixed Emotions", artist="Netsky", file="file2.mp3")
+        track2 = Track(id=2, title="Where Do We Go", artist="Dimension", file="file1.mp3")
+        track3 = Track(id=3, title="DJ Turn It Up", artist="Dimension", file="file3.mp3")
+        self.music_library.add(track1)
+        self.music_library.add(track2)
+        self.music_library.add(track3)
+        self.assertEqual(self.music_library.tally(), {'Dimension': 2, 'Netsky': 1})
