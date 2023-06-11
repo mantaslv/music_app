@@ -64,19 +64,10 @@ class MusicLibrary:
         results = self.cursor.fetchall()
         tracks = [Track(*result) for result in results if condition(Track(*result))]
         return tracks
-
-    # def search(self, condition):
-    #     select_query = 'SELECT title, artist, file FROM tracks'
-    #     tracks = DatabaseConnection.exec_params(select_query)
-    #     return [Track(*track) for track in tracks if condition(Track(*track))]
-
-    # def tally(self):
-    #     select_query = 'SELECT artist, COUNT(*) FROM tracks GROUP BY artist'
-    #     tally_rows = DatabaseConnection.exec_params(select_query)
-    #     tally = {artist: count for artist, count in tally_rows}
-
-    #     return tally
-
-    # def __del__(self):
-    #     if self.env == 'production':
-    #         self._connection.close()
+    
+    def tally(self):
+        query = 'SELECT artist, COUNT(*) FROM tracks GROUP BY artist'
+        self.cursor.execute(query)
+        tally_rows = self.cursor.fetchall()
+        tally = {artist: count for artist, count in tally_rows}
+        return tally

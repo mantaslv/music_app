@@ -73,11 +73,11 @@ class TestMusicLibrary(unittest.TestCase):
         result = self.lib.search(lambda track: "dead" in track.title.lower())
         self.assertEqual(result[0].title, track1.title)
 
-    # def test_tally(self):
-    #     track1 = Track(title="Mixed Emotions", artist="Netsky", file="file2.mp3")
-    #     track2 = Track(title="Where Do We Go", artist="Dimension", file="file1.mp3")
-    #     track3 = Track(title="DJ Turn It Up", artist="Dimension", file="file3.mp3")
-    #     self.lib.add(track1)
-    #     self.lib.add(track2)
-    #     self.lib.add(track3)
-    #     self.assertEqual(self.lib.tally(), {'Dimension': 2, 'Netsky': 1})
+    def test_tally(self):
+        track1 = Track(title="Mixed Emotions", artist="Netsky", file="file2.mp3")
+        track2 = Track(title="Where Do We Go", artist="Dimension", file="file1.mp3")
+        track3 = Track(title="DJ Turn It Up", artist="Dimension", file="file3.mp3")
+        self.lib.add(track1)
+        self.lib.add(track2)
+        self.lib.add(track3)
+        self.assertEqual(self.lib.tally(), {'Dimension': 2, 'Netsky': 1})
