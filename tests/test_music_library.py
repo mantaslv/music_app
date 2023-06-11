@@ -30,15 +30,15 @@ class TestMusicLibrary(unittest.TestCase):
         all_tracks = self.lib.all()
         self.assertEqual(all_tracks[0].artist, track.artist)
 
-    # def test_adds_multiple(self):
-    #     track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-    #     track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
-    #     track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
-    #     self.music_library.add(track1)
-    #     self.music_library.add(track2)
-    #     self.music_library.add(track3)
-    #     self.assertEqual(len(self.music_library.all()), 3)
-    #     self.assertEqual(self.music_library.all()[2].artist, track3.artist)
+    def test_adds_multiple(self):
+        track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        self.lib.add(track1)
+        self.lib.add(track2)
+        self.lib.add(track3)
+        self.assertEqual(len(self.lib.all()), 3)
+        self.assertEqual(self.lib.all()[2].artist, track3.artist)
 
     # def test_removes_existing_song(self):
     #     track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
