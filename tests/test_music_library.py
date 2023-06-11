@@ -24,11 +24,11 @@ class TestMusicLibrary(unittest.TestCase):
     def test_returns_empty_all(self):
         self.assertEqual(self.lib.all(), [])
 
-    # def test_adds_one(self):
-    #     track = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-    #     self.music_library.add(track)
-    #     all_tracks = self.music_library.all()
-    #     self.assertEqual(all_tracks[0].artist, track.artist)
+    def test_adds_one(self):
+        track = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        self.lib.add(track)
+        all_tracks = self.lib.all()
+        self.assertEqual(all_tracks[0].artist, track.artist)
 
     # def test_adds_multiple(self):
     #     track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")

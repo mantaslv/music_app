@@ -41,14 +41,16 @@ class MusicLibrary:
     def all(self):
         query = 'SELECT title, artist, file FROM tracks'
         self.cursor.execute(query)
-        return self.cursor.fetchall()
-
-    # def all(self):
-    #     select_query = 'SELECT title, artist, file FROM tracks'
-    #     tracks = DatabaseConnection.exec_params(select_query)
-    #     if not tracks:
-    #         return []
-    #     return [Track(title, artist, file) for title, artist, file in tracks]
+        results = self.cursor.fetchall()
+        tracks = [Track(title=result[0], artist=result[1], file=result[2]) for result in results]
+        return tracks
+    
+    def add(self, track):
+        query = 'INSERT INTO tracks (title, artist, file) VALUES (%s, %s, %s) RETURNING id'
+        values = (track.title, track.artist, track.file)
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        return self.cursor.fetchone()[0]
 
     # def add(self, song):
     #     insert_query = 'INSERT INTO tracks (title, artist, file) VALUES (%s, %s, %s) RETURNING id'
