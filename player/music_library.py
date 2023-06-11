@@ -51,12 +51,13 @@ class MusicLibrary:
         self.cursor.execute(query, values)
         self.conn.commit()
         return self.cursor.fetchone()[0]
-
-    # def add(self, song):
-    #     insert_query = 'INSERT INTO tracks (title, artist, file) VALUES (%s, %s, %s) RETURNING id'
-    #     values = (song.title, song.artist, song.file)
-    #     song_id = DatabaseConnection.exec_params(insert_query, values)[0][0]
-    #     song.id = song_id
+    
+    def remove(self, song_id):
+        query = 'DELETE FROM tracks WHERE id = %s'
+        values = (song_id,)
+        self.cursor.execute(query, values)
+        self.conn.commit()
+        
 
     # def remove(self, song_id):
     #     delete_query = 'DELETE FROM tracks WHERE id = %s'
