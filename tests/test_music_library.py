@@ -52,16 +52,16 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertEqual(self.lib.all()[0].title, track1.title)
         self.assertEqual(self.lib.all()[1].title, track3.title)
 
-    # def test_cant_remove_nonexistent_song(self):
-    #     track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
-    #     track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
-    #     track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
-    #     self.lib.add(track1)
-    #     self.lib.add(track2)
-    #     self.lib.add(track3)
-    #     self.assertFalse(self.lib.remove(20))
-    #     self.assertFalse(self.lib.remove(track3.id + 1))
-    #     self.assertEqual(len(self.lib.all()), 3)
+    def test_cant_remove_nonexistent_song(self):
+        track1 = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
+        track2 = Track(title="Oh Yeah", artist="Locust", file="file2.mp3")
+        track3 = Track(title="Sleep on the Wing", artist="Bibio", file="file3.mp3")
+        self.lib.add(track1)
+        self.lib.add(track2)
+        track3_id = self.lib.add(track3)
+        self.assertFalse(self.lib.remove(9999999999))
+        self.assertFalse(self.lib.remove(track3_id + 1))
+        self.assertEqual(len(self.lib.all()), 3)
 
     # def test_search(self):
     #     track1 = Track(title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
