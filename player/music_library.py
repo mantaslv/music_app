@@ -42,7 +42,7 @@ class MusicLibrary:
         query = 'SELECT title, artist, file FROM tracks'
         self.cursor.execute(query)
         results = self.cursor.fetchall()
-        tracks = [Track(title=result[0], artist=result[1], file=result[2]) for result in results]
+        tracks = [Track(*result) for result in results]
         return tracks
     
     def add(self, track):
@@ -57,13 +57,13 @@ class MusicLibrary:
         values = (song_id,)
         self.cursor.execute(query, values)
         self.conn.commit()
-        
 
-    # def remove(self, song_id):
-    #     delete_query = 'DELETE FROM tracks WHERE id = %s'
-    #     values = (song_id,)
-    #     rows_deleted = DatabaseConnection.exec_params(delete_query, values)
-    #     return rows_deleted > 0
+    def search(self, condition):
+        query = 'SELECT title, artist, file FROM tracks'
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        tracks = [Track(*result) for result in results if condition(Track(*result))]
+        return tracks
 
     # def search(self, condition):
     #     select_query = 'SELECT title, artist, file FROM tracks'

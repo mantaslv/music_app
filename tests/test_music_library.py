@@ -63,15 +63,15 @@ class TestMusicLibrary(unittest.TestCase):
         self.assertFalse(self.lib.remove(track3_id + 1))
         self.assertEqual(len(self.lib.all()), 3)
 
-    # def test_search(self):
-    #     track1 = Track(title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
-    #     track2 = Track(title="Friend Is A Four Letter Word", artist="CAKE", file="friend.mp3")
-    #     track3 = Track(title="Letters '98", artist="Havergal", file="98.mp3")
-    #     self.lib.add(track1)
-    #     self.lib.add(track2)
-    #     self.lib.add(track3)
-    #     result = self.lib.search(lambda track: "dead" in track.title.lower())
-    #     self.assertEqual(result[0].title, track1.title)
+    def test_search(self):
+        track1 = Track(title="Dead Letters", artist="P.S. Eliot", file="dl.mp3")
+        track2 = Track(title="Friend Is A Four Letter Word", artist="CAKE", file="friend.mp3")
+        track3 = Track(title="Letters '98", artist="Havergal", file="98.mp3")
+        self.lib.add(track1)
+        self.lib.add(track2)
+        self.lib.add(track3)
+        result = self.lib.search(lambda track: "dead" in track.title.lower())
+        self.assertEqual(result[0].title, track1.title)
 
     # def test_tally(self):
     #     track1 = Track(title="Mixed Emotions", artist="Netsky", file="file2.mp3")
