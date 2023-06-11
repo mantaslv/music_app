@@ -8,7 +8,6 @@ class TestMusicLibrary(unittest.TestCase):
         self.lib.db_name = "python_music_test"
         self.lib.connect()
         self.lib.create_table()
-        self.music_lib = MusicLibrary()
 
     def tearDown(self):
         self.lib.close()
@@ -20,10 +19,10 @@ class TestMusicLibrary(unittest.TestCase):
         conn.close()
 
     def test_constructs(self):
-        self.assertIsInstance(self.music_lib, MusicLibrary)
+        self.assertIsInstance(self.lib, MusicLibrary)
 
-    # def test_returns_empty_all(self):
-    #     self.assertEqual(self.music_lib.all(), [])
+    def test_returns_empty_all(self):
+        self.assertEqual(self.lib.all(), [])
 
     # def test_adds_one(self):
     #     track = Track(title="Rolling Blackouts", artist="The Go! Team", file="file1.mp3")
