@@ -51,36 +51,42 @@ class TestConsoleRunner(unittest.TestCase):
                 interface = Interface(testing_console_io, MockSubprocess())
                 interface.run()
 
-                # Assert that the add() method has been called once
                 mock_add.assert_called_once()
 
                 self.assertTrue(testing_console_io.is_done())
 
-    # def test_plays_tracks(self):
-    #     testing_console_io = TestingConsoleIO(
-    #         *self.INTRO,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Major's Titling Victory"),
-    #         InputLine("What's the artist? ", "The Cribs"),
-    #         InputLine("What's the file? ", "data/tunes/myfav.wav"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "p"),
-    #         PrintLine("1. Major's Titling Victory by The Cribs @ data/tunes/myfav.wav"),
-    #         InputLine("Which do you want to play? ", "1"),
-    #         PrintLine("Playing Major's Titling Victory by The Cribs..."),
-    #         PrintLine("Done."),
-    #         *self.QUIT,
-    #     )
-    #     mock_subprocess = MockSubprocess()
-    #     interface = Interface(testing_console_io, mock_subprocess)
-    #     interface.run()
-    #     self.assertEqual(
-    #         mock_subprocess.args,
-    #         ["afplay", "data/tunes/myfav.wav"],
-    #         "Subprocess wasn't called properly to play the file.",
-    #     )
-    #     self.assertTrue(testing_console_io.is_done())
+    def test_plays_tracks(self):
+        with patch('player.music_library.MusicLibrary.all') as mock_all:
+            mock_all.return_value = [
+                Track("Major's Titling Victory", "The Cribs", "data/tunes/myfav.wav")
+            ]
+
+            testing_console_io = TestingConsoleIO(
+                *self.INTRO,
+                InputLine("What do you pick? ", "a"),
+                InputLine("What's the title? ", "Major's Titling Victory"),
+                InputLine("What's the artist? ", "The Cribs"),
+                InputLine("What's the file? ", "data/tunes/myfav.wav"),
+                PrintLine("Added successfully."),
+                *self.OPTIONS,
+                InputLine("What do you pick? ", "p"),
+                PrintLine("1. Major's Titling Victory by The Cribs @ data/tunes/myfav.wav"),
+                InputLine("Which do you want to play? ", "1"),
+                PrintLine("Playing Major's Titling Victory by The Cribs..."),
+                PrintLine("Done."),
+                *self.QUIT,
+            )
+            mock_subprocess = MockSubprocess()
+            interface = Interface(testing_console_io, mock_subprocess)
+            interface.run()
+
+            self.assertEqual(
+                mock_subprocess.args,
+                ["afplay", "data/tunes/myfav.wav"],
+                "Subprocess wasn't called properly to play the file.",
+            )
+            self.assertTrue(testing_console_io.is_done())
+
 
     # def test_searches_tracks(self):
     #     testing_console_io = TestingConsoleIO(
