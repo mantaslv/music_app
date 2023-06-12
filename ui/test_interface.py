@@ -3,6 +3,7 @@ from ui.interface import Interface
 from ui.mocks import PrintLine, InputLine, TestingConsoleIO, MockSubprocess
 from unittest.mock import patch
 from player.music_library import Track
+import copy
 
 
 class TestConsoleRunner(unittest.TestCase):
@@ -127,39 +128,41 @@ class TestConsoleRunner(unittest.TestCase):
 
             self.assertEqual(mock_search.call_count, 5)
 
-    # def test_deletes_tracks(self):
-    #     testing_console_io = TestingConsoleIO(
-    #         *self.INTRO,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Major's Titling Victory"),
-    #         InputLine("What's the artist? ", "The Cribs"),
-    #         InputLine("What's the file? ", "file1.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Be Safe (feat. Lee Ranaldo)"),
-    #         InputLine("What's the artist? ", "The Cribs"),
-    #         InputLine("What's the file? ", "file2.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "d"),
-    #         PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
-    #         PrintLine("2. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
-    #         InputLine("Which do you want to delete? ", "1"),
-    #         PrintLine("Deleted successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "d"),
-    #         PrintLine("1. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
-    #         InputLine("Which do you want to delete? ", "2"),
-    #         PrintLine("No such track."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "l"),
-    #         PrintLine("1. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
-    #         *self.QUIT,
-    #     )
-    #     interface = Interface(testing_console_io, MockSubprocess())
-    #     interface.run()
-    #     self.assertTrue(testing_console_io.is_done())
+    def test_deletes_tracks(self):
+        with patch('player.music_library.MusicLibrary.all') as mock_all:
+            with patch('player.music_library.MusicLibrary.remove') as mock_remove:
+                tracks = [
+                    Track("Major's Titling Victory", "The Cribs", "file1.mp3"),
+                    Track("Be Safe (feat. Lee Ranaldo)", "The Cribs", "file2.mp3")
+                ]
+                updated_tracks = [
+                    Track("Be Safe (feat. Lee Ranaldo)", "The Cribs", "file2.mp3")
+                ]
+                mock_all.side_effect = [tracks, updated_tracks, updated_tracks]  # First call returns all tracks, second call returns updated list
+                mock_remove.side_effect = [True, False]  # First call deletes successfully, second call fails
+
+                testing_console_io = TestingConsoleIO(
+                    *self.INTRO,
+                    InputLine("What do you pick? ", "d"),
+                    PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+                    PrintLine("2. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
+                    InputLine("Which do you want to delete? ", "1"),
+                    PrintLine("Deleted successfully."),
+                    *self.OPTIONS,
+                    InputLine("What do you pick? ", "d"),
+                    PrintLine("1. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
+                    InputLine("Which do you want to delete? ", "2"),
+                    PrintLine("No such track."),
+                    *self.OPTIONS,
+                    InputLine("What do you pick? ", "l"),
+                    PrintLine("1. Be Safe (feat. Lee Ranaldo) by The Cribs @ file2.mp3"),
+                    *self.QUIT,
+                )
+                interface = Interface(testing_console_io, MockSubprocess())
+                interface.run()
+                self.assertTrue(testing_console_io.is_done())
+
+
 
     # def test_summarises_artists(self):
     #     testing_console_io = TestingConsoleIO(
