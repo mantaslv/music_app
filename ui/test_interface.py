@@ -3,7 +3,6 @@ from ui.interface import Interface
 from ui.mocks import PrintLine, InputLine, TestingConsoleIO, MockSubprocess
 from unittest.mock import patch
 from player.music_library import Track
-import copy
 
 
 class TestConsoleRunner(unittest.TestCase):
@@ -181,13 +180,13 @@ class TestConsoleRunner(unittest.TestCase):
 
             self.assertEqual(mock_tally.call_count, 1)
 
-    # def test_cycles_on_wrong_choice(self):
-    #     testing_console_io = TestingConsoleIO(
-    #         *self.INTRO,
-    #         InputLine("What do you pick? ", "z"),
-    #         PrintLine("No such command! Try again."),
-    #         *self.QUIT,
-    #     )
-    #     interface = Interface(testing_console_io, MockSubprocess())
-    #     interface.run()
-    #     self.assertTrue(testing_console_io.is_done())
+    def test_cycles_on_wrong_choice(self):
+        testing_console_io = TestingConsoleIO(
+            *self.INTRO,
+            InputLine("What do you pick? ", "z"),
+            PrintLine("No such command! Try again."),
+            *self.QUIT,
+        )
+        interface = Interface(testing_console_io, MockSubprocess())
+        interface.run()
+        self.assertTrue(testing_console_io.is_done())
