@@ -49,12 +49,27 @@ class TestConsoleRunner(unittest.TestCase):
                     PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
                     *self.QUIT,
                 )
+
                 interface = Interface(testing_console_io, MockSubprocess())
                 interface.run()
-
                 mock_add.assert_called_once()
-
                 self.assertTrue(testing_console_io.is_done())
+    
+    def test_adds_track_with_meta_data(self):
+        with patch('player.music_library.MusicLibrary.add') as mock_add:
+            testing_console_io = TestingConsoleIO(
+                *self.INTRO,
+                InputLine("What do you pick? ", "a"),
+                InputLine("What's the file? ", "tunes/odessa.mp3"),
+                PrintLine("Meta data found!"),
+                PrintLine("Added successfully."),
+                *self.QUIT,
+            )
+            
+            interface = Interface(testing_console_io, MockSubprocess())
+            interface.run()
+            mock_add.assert_called_once()
+            self.assertTrue(testing_console_io.is_done())
 
     def test_plays_tracks(self):
         with patch('player.music_library.MusicLibrary.all') as mock_all:

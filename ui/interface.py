@@ -1,5 +1,7 @@
 from player.music_library import MusicLibrary, Track
 from player.music_player import MusicPlayer
+import eyed3
+import os.path
 
 
 class Interface:
@@ -50,9 +52,17 @@ class Interface:
 
     def _add_track(self):
         file = self.console.input("What's the file? ")
-        self.console.print("No meta data found!")
-        title = self.console.input("What's the title? ")
-        artist = self.console.input("What's the artist? ")
+
+        if os.path.isfile(file):
+            self.console.print("Meta data found!")
+            audiofile = eyed3.load(file)
+            title = audiofile.tag.title
+            artist = audiofile.tag.artist
+        else:
+            self.console.print("No meta data found!")
+            title = self.console.input("What's the title? ")
+            artist = self.console.input("What's the artist? ")
+
         self.music_library.add(Track(title, artist, file))
         self.console.print("Added successfully.")
 
