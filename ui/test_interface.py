@@ -162,37 +162,24 @@ class TestConsoleRunner(unittest.TestCase):
                 interface.run()
                 self.assertTrue(testing_console_io.is_done())
 
+                self.assertEqual(mock_remove.call_count, 2)
 
+    def test_summarises_artists(self):
+        with patch('player.music_library.MusicLibrary.tally') as mock_tally:
+            mock_tally.return_value = {'Dimension': 2, 'Netsky': 1}
 
-    # def test_summarises_artists(self):
-    #     testing_console_io = TestingConsoleIO(
-    #         *self.INTRO,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Mixed Emotions"),
-    #         InputLine("What's the artist? ", "Netsky"),
-    #         InputLine("What's the file? ", "file2.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Where Do We Go"),
-    #         InputLine("What's the artist? ", "Dimension"),
-    #         InputLine("What's the file? ", "file1.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "DJ Turn It Up"),
-    #         InputLine("What's the artist? ", "Dimension"),
-    #         InputLine("What's the file? ", "file3.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "t"),
-    #         PrintLine("1. Dimension: 2 tracks"),
-    #         PrintLine("2. Netsky: 1 track"),
-    #         *self.QUIT,
-    #     )
-    #     interface = Interface(testing_console_io, MockSubprocess())
-    #     interface.run()
-    #     self.assertTrue(testing_console_io.is_done())
+            testing_console_io = TestingConsoleIO(
+                *self.INTRO,
+                InputLine("What do you pick? ", "t"),
+                PrintLine("1. Dimension: 2 tracks"),
+                PrintLine("2. Netsky: 1 track"),
+                *self.QUIT,
+            )
+            interface = Interface(testing_console_io, MockSubprocess())
+            interface.run()
+            self.assertTrue(testing_console_io.is_done())
+
+            self.assertEqual(mock_tally.call_count, 1)
 
     # def test_cycles_on_wrong_choice(self):
     #     testing_console_io = TestingConsoleIO(
