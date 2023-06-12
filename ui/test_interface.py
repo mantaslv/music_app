@@ -30,23 +30,22 @@ class TestConsoleRunner(unittest.TestCase):
 
     QUIT = [*OPTIONS, InputLine("What do you pick? ", "q")]
 
-    def test_adds_tracks(self):
+    def test_adds_track_without_meta_data(self):
         with patch('player.music_library.MusicLibrary.add') as mock_add:
             with patch('player.music_library.MusicLibrary.all') as mock_all:
-                mock_all.return_value = [Track("Major's Titling Victory", "The Cribs", "file1.mp3")]
+                mock_all.return_value = [Track("Odessa", "Caribou", "tunes/nometa.mp3")]
 
                 testing_console_io = TestingConsoleIO(
                     *self.INTRO,
                     InputLine("What do you pick? ", "a"),
-                    InputLine("What's the file? ", "file1.mp3"),
+                    InputLine("What's the file? ", "tunes/nometa.mp3"),
                     PrintLine("No meta data found!"),
-                    InputLine("What's the title? ", "Major's Titling Victory"),
-                    InputLine("What's the artist? ", "The Cribs"),
-                    
+                    InputLine("What's the title? ", "Odessa"),
+                    InputLine("What's the artist? ", "Caribou"),
                     PrintLine("Added successfully."),
                     *self.OPTIONS,
                     InputLine("What do you pick? ", "l"),
-                    PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+                    PrintLine("1. Odessa by Caribou @ tunes/nometa.mp3"),
                     *self.QUIT,
                 )
 
@@ -70,6 +69,19 @@ class TestConsoleRunner(unittest.TestCase):
             interface.run()
             mock_add.assert_called_once()
             self.assertTrue(testing_console_io.is_done())
+
+    def test_cannot_add_nonexistent_file(self):
+        testing_console_io = TestingConsoleIO(
+            *self.INTRO,
+            InputLine("What do you pick? ", "a"),
+            InputLine("What's the file? ", "file.mp3"),
+            PrintLine("No file found!"),
+            *self.QUIT,
+        )
+            
+        interface = Interface(testing_console_io, MockSubprocess())
+        interface.run()
+        self.assertTrue(testing_console_io.is_done())
 
     def test_plays_tracks(self):
         with patch('player.music_library.MusicLibrary.all') as mock_all:

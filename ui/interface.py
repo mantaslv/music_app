@@ -53,18 +53,21 @@ class Interface:
     def _add_track(self):
         file = self.console.input("What's the file? ")
 
-        if os.path.isfile(file):
-            self.console.print("Meta data found!")
-            audiofile = eyed3.load(file)
-            title = audiofile.tag.title
-            artist = audiofile.tag.artist
-        else:
-            self.console.print("No meta data found!")
-            title = self.console.input("What's the title? ")
-            artist = self.console.input("What's the artist? ")
+        if (os.path.isfile(file)):
+            if eyed3.load(file).tag != None:
+                self.console.print("Meta data found!")
+                audiofile = eyed3.load(file)
+                title = audiofile.tag.title
+                artist = audiofile.tag.artist
+            else:
+                self.console.print("No meta data found!")
+                title = self.console.input("What's the title? ")
+                artist = self.console.input("What's the artist? ")
 
-        self.music_library.add(Track(title, artist, file))
-        self.console.print("Added successfully.")
+            self.music_library.add(Track(title, artist, file))
+            self.console.print("Added successfully.")
+        else:
+            self.console.print("No file found!")
 
     def _list_tracks(self, tracks):
         for idx, track in enumerate(tracks):
