@@ -2,7 +2,6 @@ import unittest
 from ui.interface import Interface
 from ui.mocks import PrintLine, InputLine, TestingConsoleIO, MockSubprocess
 from unittest.mock import patch
-import psycopg2
 from player.music_library import Track
 
 
@@ -63,12 +62,6 @@ class TestConsoleRunner(unittest.TestCase):
 
             testing_console_io = TestingConsoleIO(
                 *self.INTRO,
-                InputLine("What do you pick? ", "a"),
-                InputLine("What's the title? ", "Major's Titling Victory"),
-                InputLine("What's the artist? ", "The Cribs"),
-                InputLine("What's the file? ", "data/tunes/myfav.wav"),
-                PrintLine("Added successfully."),
-                *self.OPTIONS,
                 InputLine("What do you pick? ", "p"),
                 PrintLine("1. Major's Titling Victory by The Cribs @ data/tunes/myfav.wav"),
                 InputLine("Which do you want to play? ", "1"),
@@ -88,51 +81,51 @@ class TestConsoleRunner(unittest.TestCase):
             self.assertTrue(testing_console_io.is_done())
 
 
-    # def test_searches_tracks(self):
-    #     testing_console_io = TestingConsoleIO(
-    #         *self.INTRO,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "Major's Titling Victory"),
-    #         InputLine("What's the artist? ", "The Cribs"),
-    #         InputLine("What's the file? ", "file1.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         InputLine("What do you pick? ", "a"),
-    #         InputLine("What's the title? ", "The Milky Way over Ratlinghope"),
-    #         InputLine("What's the artist? ", "Bibio"),
-    #         InputLine("What's the file? ", "file2.mp3"),
-    #         PrintLine("Added successfully."),
-    #         *self.OPTIONS,
-    #         *self.SEARCH,
-    #         InputLine("What do you want to search by? ", "t"),
-    #         InputLine("What do you want to search for? ", "vic"),
-    #         PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
-    #         *self.OPTIONS,
-    #         *self.SEARCH,
-    #         InputLine("What do you want to search by? ", "a"),
-    #         InputLine("What do you want to search for? ", "ibi"),
-    #         PrintLine("1. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
-    #         *self.OPTIONS,
-    #         *self.SEARCH,
-    #         InputLine("What do you want to search by? ", "f"),
-    #         InputLine("What do you want to search for? ", "fi"),
-    #         PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
-    #         PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
-    #         *self.OPTIONS,
-    #         *self.SEARCH,
-    #         InputLine("What do you want to search by? ", "*"),
-    #         InputLine("What do you want to search for? ", "r"),
-    #         PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
-    #         PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
-    #         *self.OPTIONS,
-    #         *self.SEARCH,
-    #         InputLine("What do you want to search by? ", "*"),
-    #         InputLine("What do you want to search for? ", "xx"),
-    #         *self.QUIT,
-    #     )
-    #     interface = Interface(testing_console_io, MockSubprocess())
-    #     interface.run()
-    #     self.assertTrue(testing_console_io.is_done())
+    def test_searches_tracks(self):
+        with patch('player.music_library.MusicLibrary.search') as mock_search:
+            mock_search.side_effect = [
+                [Track("Major's Titling Victory", "The Cribs", "file1.mp3")],  # First search by title
+                [Track("The Milky Way over Ratlinghope", "Bibio", "file2.mp3")],  # Second search by artist
+                [Track("Major's Titling Victory", "The Cribs", "file1.mp3"), Track("The Milky Way over Ratlinghope", "Bibio", "file2.mp3")],  # Third search by file
+                [Track("Major's Titling Victory", "The Cribs", "file1.mp3"), Track("The Milky Way over Ratlinghope", "Bibio", "file2.mp3")],  # Fourth search by anything
+                [],  # Fifth search by anything (no results)
+            ]
+
+            testing_console_io = TestingConsoleIO(
+                *self.INTRO,
+                *self.SEARCH,
+                InputLine("What do you want to search by? ", "t"),
+                InputLine("What do you want to search for? ", "vic"),
+                PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+                *self.OPTIONS,
+                *self.SEARCH,
+                InputLine("What do you want to search by? ", "a"),
+                InputLine("What do you want to search for? ", "ibi"),
+                PrintLine("1. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+                *self.OPTIONS,
+                *self.SEARCH,
+                InputLine("What do you want to search by? ", "f"),
+                InputLine("What do you want to search for? ", "fi"),
+                PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+                PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+                *self.OPTIONS,
+                *self.SEARCH,
+                InputLine("What do you want to search by? ", "*"),
+                InputLine("What do you want to search for? ", "r"),
+                PrintLine("1. Major's Titling Victory by The Cribs @ file1.mp3"),
+                PrintLine("2. The Milky Way over Ratlinghope by Bibio @ file2.mp3"),
+                *self.OPTIONS,
+                *self.SEARCH,
+                InputLine("What do you want to search by? ", "*"),
+                InputLine("What do you want to search for? ", "xx"),
+                *self.QUIT,
+            )
+
+            interface = Interface(testing_console_io, MockSubprocess())
+            interface.run()
+            self.assertTrue(testing_console_io.is_done())
+
+            self.assertEqual(mock_search.call_count, 5)
 
     # def test_deletes_tracks(self):
     #     testing_console_io = TestingConsoleIO(
