@@ -49,9 +49,10 @@ class Interface:
         return self.console.input("What do you pick? ")
 
     def _add_track(self):
+        file = self.console.input("What's the file? ")
+        self.console.print("No meta data found!")
         title = self.console.input("What's the title? ")
         artist = self.console.input("What's the artist? ")
-        file = self.console.input("What's the file? ")
         self.music_library.add(Track(title, artist, file))
         self.console.print("Added successfully.")
 

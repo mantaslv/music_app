@@ -38,9 +38,11 @@ class TestConsoleRunner(unittest.TestCase):
                 testing_console_io = TestingConsoleIO(
                     *self.INTRO,
                     InputLine("What do you pick? ", "a"),
+                    InputLine("What's the file? ", "file1.mp3"),
+                    PrintLine("No meta data found!"),
                     InputLine("What's the title? ", "Major's Titling Victory"),
                     InputLine("What's the artist? ", "The Cribs"),
-                    InputLine("What's the file? ", "file1.mp3"),
+                    
                     PrintLine("Added successfully."),
                     *self.OPTIONS,
                     InputLine("What do you pick? ", "l"),
