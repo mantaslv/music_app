@@ -1,7 +1,7 @@
 import unittest
 from ui.interface import Interface
 from ui.mocks import PrintLine, InputLine, TestingConsoleIO, MockSubprocess
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from player.music_library import Track
 
 
@@ -68,6 +68,33 @@ class TestConsoleRunner(unittest.TestCase):
             interface = Interface(testing_console_io, MockSubprocess())
             interface.run()
             mock_add.assert_called_once()
+            self.assertTrue(testing_console_io.is_done())
+
+    def test_adds_track_with_meta_data_mocked(self):
+        with patch('player.music_library.MusicLibrary.add') as mock_add:
+            mocked_load = MagicMock()
+            mocked_tag = MagicMock()
+            mocked_tag.title = "Odessa"
+            mocked_tag.artist = "Caribou"
+            mocked_load.tag = mocked_tag
+
+            testing_console_io = TestingConsoleIO(
+                *self.INTRO,
+                InputLine("What do you pick? ", "a"),
+                InputLine("What's the file? ", "tunes/nometa.mp3"),
+                PrintLine("Meta data found!"),
+                PrintLine("Added successfully."),
+                *self.QUIT,
+            )
+
+            with patch('ui.interface.eyed3.load', return_value=mocked_load):
+                interface = Interface(testing_console_io, MockSubprocess())
+                interface.run()
+
+            track_args = mock_add.call_args[0][0]
+            self.assertEqual(track_args.title, "Odessa")
+            self.assertEqual(track_args.artist, "Caribou")
+            self.assertEqual(track_args.file, "tunes/nometa.mp3")
             self.assertTrue(testing_console_io.is_done())
 
     def test_cannot_add_nonexistent_file(self):
