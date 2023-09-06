@@ -4,7 +4,6 @@ from ui.mocks import PrintLine, InputLine, TestingConsoleIO, MockSubprocess
 from unittest.mock import patch, MagicMock
 from player.music_library import Track
 
-
 class TestConsoleRunner(unittest.TestCase):
     OPTIONS = [
         PrintLine("Enter:"),
